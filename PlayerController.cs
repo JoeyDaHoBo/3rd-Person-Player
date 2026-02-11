@@ -3,46 +3,35 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
+    private CharacterController _characterController;
 
-    public float speed = 30f;
-    public float turnSpeed = 45f;
-    public float jumpHeight = 10f; 
+    private float _rotationY;
 
-    private float horizontalInput;
-    private float JumpInput; 
-    private float forwardInput;
-    private Rigidbody playerRb;
-
+    public float MoveSpeed = 10f, RotationSpeed = 5f;
 
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        playerRb = GetComponent<Rigidbody>();
-        playerRb.useGravity = true;
-        playerRb.isKinematic = false;
+        _characterController = GetComponent<CharacterController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Move(Vector2 movementVector)
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        forwardInput = Input.GetAxis("Vertical");
-        JumpInput = Input.GetAxis("Jump");
-
-
-      
-
-                //move vechile forward per secound
-       transform.Translate(Vector3.forward  * speed * forwardInput * Time.deltaTime);
-
-    
-
-        //turn vechile left and right
-        // transform.Translate(Vector3.right * Time.deltaTime * turnSpeed *horizontalInput);
-        transform.Rotate(Vector3.up * turnSpeed * horizontalInput * Time.deltaTime);
-        //move vechile up and down
-        transform.Translate(Vector3.up  * jumpHeight * JumpInput * Time.deltaTime);
+        
+        Vector3 move = transform.forward * movementVector.y + transform.right * movementVector.x;
+        //Setting Movement based off the speed and game time
+        move = move * MoveSpeed * Time.deltaTime;
+        _characterController.Move(move);
+        
     }
-   
+
+    public void Rotate(Vector2 rotationVector)
+    {
+        _rotationY += rotationVector.x * RotationSpeed *Time.deltaTime;
+        transform.localRotation = Quaternion.Euler(0,_rotationY, 0);
+    }
+
+
+
+    //ending bracket for class
 }
